@@ -1,0 +1,30 @@
+* Redux in angular presentation
+This is a presentation of the redux applied
+architecture when working in Angular projects.
+
+* Tooling
+** Easy view creation
+   If you choose to create views without dependencies
+   (just @Input and @Output) there is a good project
+   for handling the workflow
+   [[https://storybook.js.org][Storybook]]
+** State view and representation
+   Choose a browser and Install the Redux DevTools for it.
+   [[https://github.com/reduxjs/redux-devtools][Redux DevTools]]
+** Immutability handling
+   When working with data in a redux workflow, you must use
+   immutable objects frequently.
+   There is some libraries for it:
+*** My favourite one (plain objects, easier to manage)
+    [[https://github.com/kolodny/immutability-helper][Immutability helper]]
+*** A high rated one (own structures, could cause some troubles)
+    [[https://facebook.github.io/immutable-js/][ImmutableJS]]
+** Easing action creation and handling (don't use it if you already don't understand the workflow)
+   [[https://redux-actions.js.org/][Redux actions]]
+* Resources 
+** Flux standard action spec
+   [[https://github.com/redux-utilities/flux-standard-action][Flux Standard Action]]
+** Reducer in Redux docs
+   [[https://redux.js.org/basics/reducers][Redux reducers]]
+** Los tres principios de Redux
+   [[https://es.redux.js.org/docs/introduccion/tres-principios.html][Redux principles]]
