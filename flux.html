@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Introducción a Flux</title>
+<meta name="author" content="(Daniel Peña Iglesias)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="./reveal.js/css/reveal.css"/>
+
+<link rel="stylesheet" href="./reveal.js/css/theme/solarized.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = './reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">Introducción a Flux</h1><h2 class="author">Daniel Peña Iglesias</h2><h2 class="date">6 de Septiembre del 2018</h2>
+</section>
+<section>
+<section id="slide-orgbc72023">
+<h2 id="orgbc72023">¿Qué es Flux?</h2>
+<ul>
+<li>Arquitectura</li>
+<li><p>
+Gestión del estado
+</p>
+<aside class="notes">
+<ul>
+<li>Arquitectura
+<ul>
+<li>Originalmente presentado por Facebook por un problema de sincronía.</li>
+<li>Explicar que es comparable a MVC</li>
+
+</ul></li>
+<li>Hablaremos de Flux y su uso práctico en Angular</li>
+<li>Tenemos otros conceptos que no son del propio patrón,
+por lo tanto no hablamos de Flux como lo describió Facebook,
+sino de la arquitectura real.</li>
+<li>Esta charla usa el patrón expuesto por Flux, sin embargo,
+no es el patrón exacto que usaremos. 
+El patrón será el de Redux y NGRX + otros aspectos.</li>
+
+</ul>
+
+</aside></li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org34d2ddf">
+<h3 id="org34d2ddf">Motivación</h3>
+<ul>
+<li class="fragment roll-in">Organizar el flujo de datos/procesamiento</li>
+<li class="fragment roll-in">Simplificación de vistas</li>
+<li class="fragment roll-in">Depuración simplificada</li>
+<li class="fragment roll-in">Automatización 
+<ul>
+<li>DevOps application level</li>
+
+</ul></li>
+
+</ul>
+<aside class="notes">
+<ul>
+<li>Queremos que nuestro flujo sea determinista para
+<ul>
+<li>Predictibilidad de sucesos/flujo</li>
+<li>Rápida localización de errores</li>
+<li>Sincronía entre componentes (easy mode)</li>
+
+</ul></li>
+<li>Las vistas pasan a ser componentes tipo 'caja tonta'
+<ul>
+<li>Los componentes se pueden comparar a un teclado o pantalla</li>
+<li>Existe software dedicado como Storybook para trabajar estos</li>
+
+</ul></li>
+<li>Según se desarrolla la aplicación hay varias depuraciones aplicables
+<ul>
+<li>Proceso de desarrollo</li>
+<li>Trazas de depuración</li>
+
+</ul></li>
+<li>Podemos incluir tareas para automatizar procesos generales
+derivados del estado
+<ul>
+<li>Almacenamiento</li>
+<li>Trazabilidad de errores</li>
+<li>Autoreparación mediante 'rebobinado' de la aplicación</li>
+<li>Encriptación de datos</li>
+<li>Logs de aplicación</li>
+
+</ul></li>
+
+</ul>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-orgf7639ca">
+<h3 id="orgf7639ca">Flujo MVC vs Redux</h3>
+
+<div class="figure">
+<p><img src="./img/redux-overview.png" alt="redux-overview.png" />
+</p>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orga0922b7">
+<h3 id="orga0922b7">Flujo Redux</h3>
+
+<div class="figure">
+<p><img src="./img/FLOW.png" alt="FLOW.png" />
+</p>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgaa78c19">
+<h2 id="orgaa78c19">Redux</h2>
+<p>
+O mejor dicho NGRX
+</p>
+<ul>
+<li>Store</li>
+<li>Efectos (side-effects)</li>
+
+</ul>
+<aside class="notes">
+<p>
+Sólo dos cosas componen redux:
+</p>
+<ul>
+<li>El Store, nuestro gestor de estados.</li>
+<li>Los efectos, también conocidos como efectos secundarions o side-effects</li>
+
+</ul>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-org7ac1d56">
+<h3 id="org7ac1d56">El Store</h3>
+<p>
+aka M
+</p>
+<ul>
+<li class="fragment roll-in">Recibe acciones SÍNCRONAS</li>
+<li class="fragment roll-in">Genera nuevos estados</li>
+<li class="fragment roll-in">Empuja datos si hay cambios</li>
+
+</ul>
+<aside class="notes">
+<ul>
+<li>Reciben acciones</li>
+<li>Transforman el estado</li>
+<li>Emiten los datos cambiados a los componentes subscritos</li>
+
+</ul>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-org5c42dd8">
+<h3 id="org5c42dd8">Los efectos</h3>
+<p>
+aka C
+</p>
+<ul>
+<li class="fragment roll-in">Reciben acciones ASÍNCRONAS</li>
+<li class="fragment roll-in">Procesan las acciones
+<ul>
+<li>Peticiones</li>
+<li>Timers</li>
+<li>&#x2026;</li>
+
+</ul></li>
+<li class="fragment roll-in">Emiten acciones como resultado</li>
+
+</ul>
+<aside class="notes">
+<ul>
+<li>Recibirán las acciones correspondientes</li>
+<li>Realizarán la tarea que sea necesaria</li>
+<li>Emitirán la acción correspondiente como resultado</li>
+
+</ul>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-org09210ae">
+<h3 id="org09210ae">¿Y las vistas, no hacen nada?</h3>
+<p>
+aka V
+</p>
+<ul>
+<li class="fragment roll-in">Reciben estados</li>
+<li class="fragment roll-in">Presentan una vista</li>
+<li class="fragment roll-in">Estados temporales</li>
+<li class="fragment roll-in">Animaciones</li>
+<li class="fragment roll-in">Validaciones</li>
+<li class="fragment roll-in">Emiten acciones</li>
+
+</ul>
+<aside class="notes">
+<ul>
+<li>Recogen los datos que le entrega el store.</li>
+<li>Deciden la presentación de esos datos (como una configuración)</li>
+<li>Pueden almacenar datos temporales (el input del usuario)</li>
+<li>Realizan animaciones según indica el estado</li>
+<li>Validan inputs del usuario</li>
+<li>Emiten acciones tras el input del usuario</li>
+
+</ul>
+
+</aside>
+</section>
+</section>
+<section>
+<section id="slide-org3889082">
+<h3 id="org3889082">¿Preguntas?</h3>
+</section>
+</section>
+<section>
+<section id="slide-orgcba7088">
+<h3 id="orgcba7088">¿Tiempo de ejemplos?</h3>
+</section>
+</section>
+<section>
+<section id="slide-org1defb8f">
+<h2 id="org1defb8f">¿Cómo funciona el Store?</h2>
+<ul>
+<li>Acciones</li>
+<li>Reducers</li>
+<li>Efectos</li>
+<li>¿Conexión con la vista?</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-org1149a14">
+<h3 id="org1149a14">Action</h3>
+<p>
+Las acciones son objetos JS!!
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-typescript"><span style="color: #4f97d7; font-weight: bold;">type</span> <span style="color: #ce537a; font-weight: bold;">Action</span>&lt;T&gt; <span style="color: #4f97d7;">{</span>
+  <span style="color: #2aa1ae; background-color: #292e34;">// </span><span style="color: #2aa1ae; background-color: #292e34;">tipo de acci&#243;n</span>
+  <span style="color: #4f97d7; font-weight: bold;">type</span>: <span style="color: #4f97d7; font-weight: bold;">string</span>;
+  <span style="color: #2aa1ae; background-color: #292e34;">// </span><span style="color: #2aa1ae; background-color: #292e34;">datos de la acci&#243;n</span>
+  payload: T;
+<span style="color: #4f97d7;">}</span>
+</pre>
+</div>
+
+</section>
+<section >
+
+<div class="org-src-container">
+
+<pre  class="src src-typescript"><span style="color: #2aa1ae; background-color: #292e34;">// </span><span style="color: #2aa1ae; background-color: #292e34;">counter.actions.ts</span>
+
+<span style="color: #4f97d7; font-weight: bold;">export</span> <span style="color: #4f97d7; font-weight: bold;">const</span> <span style="color: #7590db;">INCREMENT</span> = <span style="color: #2d9574;">'INCREMENT'</span>;
+<span style="color: #4f97d7; font-weight: bold;">export</span> <span style="color: #4f97d7; font-weight: bold;">const</span> <span style="color: #7590db;">DECREMENT</span> = <span style="color: #2d9574;">'DECREMENT'</span>;
+
+<span style="color: #2aa1ae; background-color: #292e34;">// </span><span style="color: #2aa1ae; background-color: #292e34;">---------- ACTION CREATORS ----------</span>
+<span style="color: #4f97d7; font-weight: bold;">export</span> <span style="color: #4f97d7; font-weight: bold;">function</span> <span style="color: #bc6ec5; font-weight: bold;">increment</span><span style="color: #4f97d7;">(</span><span style="color: #7590db;">by</span>: <span style="color: #4f97d7; font-weight: bold;">number</span><span style="color: #4f97d7;">)</span> <span style="color: #4f97d7;">{</span>
+  <span style="color: #2aa1ae; background-color: #292e34;">// </span><span style="color: #2aa1ae; background-color: #292e34;">create the action</span>
+  <span style="color: #4f97d7; font-weight: bold;">return</span> <span style="color: #bc6ec5;">{</span>
+    <span style="color: #4f97d7; font-weight: bold;">type</span>: INCREMENT,
+    payload: by
+  <span style="color: #bc6ec5;">}</span>;
+<span style="color: #4f97d7;">}</span>
+
+<span style="color: #4f97d7; font-weight: bold;">export</span> <span style="color: #4f97d7; font-weight: bold;">function</span> <span style="color: #bc6ec5; font-weight: bold;">decrement</span><span style="color: #4f97d7;">(</span><span style="color: #7590db;">by</span>: <span style="color: #4f97d7; font-weight: bold;">number</span><span style="color: #4f97d7;">)</span> <span style="color: #4f97d7;">{</span>
+  <span style="color: #2aa1ae; background-color: #292e34;">// </span><span style="color: #2aa1ae; background-color: #292e34;">create the action</span>
+  <span style="color: #4f97d7; font-weight: bold;">return</span> <span style="color: #bc6ec5;">{</span>
+    <span style="color: #4f97d7; font-weight: bold;">type</span>: DECREMENT,
+    payload: by
+  <span style="color: #bc6ec5;">}</span>;
+<span style="color: #4f97d7;">}</span>
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orgf09a594">
+<h3 id="orgf09a594">El reducer</h3>
+
+<div class="figure">
+<p><img src="./img/reducer.png" alt="reducer.png" />
+</p>
+</div>
+</section>
+<section >
+<p>
+El reducer es una función reductora de la forma:
+</p>
+<div class="org-src-container">
+
+<pre  class="src src-typescript"><span style="color: #4f97d7; font-weight: bold;">function</span> <span style="color: #bc6ec5; font-weight: bold;">reduce</span><span style="color: #4f97d7;">(</span><span style="color: #7590db;">state</span>, <span style="color: #7590db;">action</span><span style="color: #4f97d7;">)</span> <span style="color: #4f97d7;">{</span>
+  <span style="color: #2aa1ae; background-color: #292e34;">// </span><span style="color: #2aa1ae; background-color: #292e34;">code</span>
+  <span style="color: #4f97d7; font-weight: bold;">return</span> newState;
+<span style="color: #4f97d7;">}</span>
+</pre>
+</div>
+
+<p>
+Otro modo de interpretarla es: 
+</p>
+<pre  class="example">
+state + action = newState;
+</pre>
+
+</section>
+<section >
+
+<p>
+Ejemplo
+</p>
+
+<div class="org-src-container">
+
+<pre  class="src src-typescript"><span style="color: #2aa1ae; background-color: #292e34;">// </span><span style="color: #2aa1ae; background-color: #292e34;">counter.reducer.ts</span>
+
+<span style="color: #4f97d7; font-weight: bold;">import</span> <span style="color: #4f97d7;">{</span> INCREMENT, DECREMENT <span style="color: #4f97d7;">}</span> <span style="color: #4f97d7; font-weight: bold;">from</span> <span style="color: #2d9574;">'./counter.actions.ts'</span>;
+
+<span style="color: #4f97d7; font-weight: bold;">const</span> <span style="color: #7590db;">initialState</span> = <span style="color: #a45bad;">0</span>;
+<span style="color: #4f97d7; font-weight: bold;">export</span> <span style="color: #4f97d7; font-weight: bold;">function</span> <span style="color: #bc6ec5; font-weight: bold;">counterReducer</span><span style="color: #4f97d7;">(</span><span style="color: #7590db;">state</span> = <span style="color: #7590db;">initialState</span>, <span style="color: #7590db;">action</span><span style="color: #4f97d7;">)</span> <span style="color: #4f97d7;">{</span>
+  <span style="color: #4f97d7; font-weight: bold;">switch</span> <span style="color: #bc6ec5;">(</span>action.<span style="color: #4f97d7; font-weight: bold;">type</span><span style="color: #bc6ec5;">)</span>
+    <span style="color: #4f97d7; font-weight: bold;">case</span> INCREMENT:
+      <span style="color: #4f97d7; font-weight: bold;">return</span> state + action.payload;
+    <span style="color: #4f97d7; font-weight: bold;">case</span> DECREMENT:
+      <span style="color: #4f97d7; font-weight: bold;">return</span> state - action.payload;
+    <span style="color: #4f97d7; font-weight: bold;">default</span>:
+      <span style="color: #4f97d7; font-weight: bold;">return</span> state;
+<span style="color: #4f97d7;">}</span>
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org200707c">
+<h3 id="org200707c">Views</h3>
+<div class="org-src-container">
+
+<pre  class="src src-typescript"><span style="color: #2aa1ae; background-color: #292e34;">// </span><span style="color: #2aa1ae; background-color: #292e34;">counter.component.ts</span>
+<span style="color: #4f97d7; font-weight: bold;">import</span> <span style="color: #4f97d7;">{</span> increment, decrement <span style="color: #4f97d7;">}</span> <span style="color: #4f97d7; font-weight: bold;">from</span> <span style="color: #2d9574;">'app/store/counter/counter.actions.ts'</span>;
+<span style="color: #2aa1ae; background-color: #292e34;">// </span><span style="color: #2aa1ae; background-color: #292e34;">code...</span>
+
+<span style="color: #2aa1ae; background-color: #292e34;">// </span><span style="color: #2aa1ae; background-color: #292e34;">inside the view component</span>
+counter$: Observable&lt;<span style="color: #4f97d7; font-weight: bold;">number</span>&gt;;
+<span style="color: #4f97d7; font-weight: bold;">constructor</span><span style="color: #4f97d7;">(</span><span style="color: #4f97d7; font-weight: bold;">private</span> store: Store&lt;AppState&gt;<span style="color: #4f97d7;">)</span> <span style="color: #4f97d7;">{</span>
+  <span style="color: #4f97d7; font-weight: bold;">this</span>.counter$ = store.select<span style="color: #bc6ec5;">(</span><span style="color: #2d9574;">(</span>state<span style="color: #2d9574;">)</span> =&gt; state<span style="color: #bc6ec5;">)</span>;
+<span style="color: #4f97d7;">}</span>
+
+onIncrement<span style="color: #4f97d7;">(</span>value: <span style="color: #4f97d7; font-weight: bold;">number</span><span style="color: #4f97d7;">)</span> <span style="color: #4f97d7;">{</span>
+  <span style="color: #4f97d7; font-weight: bold;">this</span>.store.dispatch<span style="color: #bc6ec5;">(</span>increment<span style="color: #2d9574;">(</span>value<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>;
+<span style="color: #4f97d7;">}</span>
+
+onDecrement<span style="color: #4f97d7;">(</span>value: <span style="color: #4f97d7; font-weight: bold;">number</span><span style="color: #4f97d7;">)</span> <span style="color: #4f97d7;">{</span>
+  <span style="color: #4f97d7; font-weight: bold;">this</span>.store.dispatch<span style="color: #bc6ec5;">(</span>decrement<span style="color: #2d9574;">(</span>value<span style="color: #2d9574;">)</span><span style="color: #bc6ec5;">)</span>;
+<span style="color: #4f97d7;">}</span>
+</pre>
+</div>
+
+</section>
+<section >
+
+<div class="org-src-container">
+
+<pre  class="src src-html"><span style="color: #2aa1ae; background-color: #292e34;">&lt;!-- </span><span style="color: #2aa1ae; background-color: #292e34;">counter.component.html </span><span style="color: #2aa1ae; background-color: #292e34;">--&gt;</span>
+&lt;<span style="color: #bc6ec5; font-weight: bold;">div</span>&gt;{{ counter$ | async }}&lt;/<span style="color: #bc6ec5; font-weight: bold;">div</span>&gt;
+</pre>
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org3c198de">
+<h3 id="org3c198de">Effect</h3>
+<p>
+Para otra sesión
+</p>
+</section>
+</section>
+</div>
+</div>
+<script src="./reveal.js/lib/js/head.min.js"></script>
+<script src="./reveal.js/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: false,
+rollingLinks: true,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: './reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: './reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: './reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: './reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: './reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

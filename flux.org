@@ -1,0 +1,263 @@
+#+TITLE: Introducción a Flux
+#+DATE: 6 de Septiembre del 2018
+#+OPTIONS: timestamp:nil toc:nil num:nil reveal_title_slide:auto reveal_slide_number:nil reveal_control:auto
+#+OPTIONS: reveal_rolling_links:on
+#+REVEAL_THEME: solarized
+#+REVEAL_HLEVEL: 2
+* ¿Qué es Flux?
+ - Arquitectura
+ - Gestión del estado
+  #+BEGIN_NOTES
+  - Arquitectura
+    - Originalmente presentado por Facebook por un problema de sincronía.
+    - Explicar que es comparable a MVC
+  - Hablaremos de Flux y su uso práctico en Angular
+  - Tenemos otros conceptos que no son del propio patrón,
+    por lo tanto no hablamos de Flux como lo describió Facebook,
+    sino de la arquitectura real.
+  - Esta charla usa el patrón expuesto por Flux, sin embargo,
+    no es el patrón exacto que usaremos. 
+    El patrón será el de Redux y NGRX + otros aspectos.
+  #+END_NOTES
+** Motivación
+   #+ATTR_REVEAL: :frag (roll-in)
+   - Organizar el flujo de datos/procesamiento
+   - Simplificación de vistas
+   - Depuración simplificada
+   - Automatización 
+     - DevOps application level
+   #+BEGIN_NOTES
+   - Queremos que nuestro flujo sea determinista para
+     - Predictibilidad de sucesos/flujo
+     - Rápida localización de errores
+     - Sincronía entre componentes (easy mode)
+   - Las vistas pasan a ser componentes tipo 'caja tonta'
+     - Los componentes se pueden comparar a un teclado o pantalla
+     - Existe software dedicado como Storybook para trabajar estos
+   - Según se desarrolla la aplicación hay varias depuraciones aplicables
+     - Proceso de desarrollo
+     - Trazas de depuración
+   - Podemos incluir tareas para automatizar procesos generales
+     derivados del estado
+     - Almacenamiento
+     - Trazabilidad de errores
+     - Autoreparación mediante 'rebobinado' de la aplicación
+     - Encriptación de datos
+     - Logs de aplicación
+   #+END_NOTES
+** Flujo MVC vs Redux
+   [[./img/redux-overview.png]]
+** Flujo Redux
+   [[./img/FLOW.png]]
+* Redux
+  O mejor dicho NGRX
+  - Store
+  - Efectos (side-effects)
+#+BEGIN_NOTES
+Sólo dos cosas componen redux:
+  - El Store, nuestro gestor de estados.
+  - Los efectos, también conocidos como efectos secundarions o side-effects
+#+END_NOTES
+** El Store
+   aka M
+   #+ATTR_REVEAL: :frag (roll-in)
+- Recibe acciones SÍNCRONAS
+- Genera nuevos estados
+- Empuja datos si hay cambios
+#+BEGIN_NOTES
+- Reciben acciones
+- Transforman el estado
+- Emiten los datos cambiados a los componentes subscritos
+#+END_NOTES
+** Los efectos
+   aka C
+   #+ATTR_REVEAL: :frag (roll-in)
+- Reciben acciones ASÍNCRONAS
+- Procesan las acciones
+  - Peticiones
+  - Timers
+  - ...
+- Emiten acciones como resultado
+#+BEGIN_NOTES
+- Recibirán las acciones correspondientes
+- Realizarán la tarea que sea necesaria
+- Emitirán la acción correspondiente como resultado
+#+END_NOTES
+** ¿Y las vistas, no hacen nada?
+   aka V
+   #+ATTR_REVEAL: :frag (roll-in)
+- Reciben estados 
+- Presentan una vista
+- Estados temporales
+- Animaciones
+- Validaciones
+- Emiten acciones
+#+BEGIN_NOTES
+- Recogen los datos que le entrega el store.
+- Deciden la presentación de esos datos (como una configuración)
+- Pueden almacenar datos temporales (el input del usuario)
+- Realizan animaciones según indica el estado
+- Validan inputs del usuario
+- Emiten acciones tras el input del usuario
+#+END_NOTES
+** ¿Preguntas?
+** ¿Tiempo de ejemplos?
+* ¿Cómo funciona el Store?
+- Acciones
+- Reducers
+- Efectos
+- ¿Conexión con la vista?
+** Action
+   Las acciones son objetos JS!!
+
+#+BEGIN_SRC typescript
+type Action<T> {
+  // tipo de acción
+  type: string;
+  // datos de la acción
+  payload: T;
+}
+#+END_SRC
+
+#+REVEAL: split
+
+#+BEGIN_SRC typescript
+// counter.actions.ts
+
+export const INCREMENT = 'INCREMENT';
+export const DECREMENT = 'DECREMENT';
+
+// ---------- ACTION CREATORS ----------
+export function increment(by: number) {
+  // create the action
+  return {
+    type: INCREMENT,
+    payload: by
+  };
+}
+
+export function decrement(by: number) {
+  // create the action
+  return {
+    type: DECREMENT,
+    payload: by
+  };
+}
+#+END_SRC
+** El reducer
+[[./img/reducer.png]]
+#+REVEAL: split
+El reducer es una función reductora de la forma:
+#+BEGIN_SRC typescript
+function reduce(state, action) {
+  // code
+  return newState;
+}
+#+END_SRC
+
+Otro modo de interpretarla es: 
+#+BEGIN_SRC 
+state + action = newState;
+#+END_SRC
+
+#+REVEAL: split
+  
+Ejemplo
+
+#+BEGIN_SRC typescript
+// counter.reducer.ts
+
+import { INCREMENT, DECREMENT } from './counter.actions.ts';
+
+const initialState = 0;
+export function counterReducer(state = initialState, action) {
+  switch (action.type)
+    case INCREMENT:
+      return state + action.payload;
+    case DECREMENT:
+      return state - action.payload;
+    default:
+      return state;
+}
+#+END_SRC
+** Views
+#+BEGIN_SRC typescript
+// counter.component.ts
+import { increment, decrement } from 'app/store/counter/counter.actions.ts';
+// code...
+
+// inside the view component
+counter$: Observable<number>;
+constructor(private store: Store<AppState>) {
+  this.counter$ = store.select((state) => state);
+}
+
+onIncrement(value: number) {
+  this.store.dispatch(increment(value));
+}
+
+onDecrement(value: number) {
+  this.store.dispatch(decrement(value));
+}
+#+END_SRC
+   
+#+REVEAL: split
+
+#+BEGIN_SRC html
+<!-- counter.component.html -->
+<div>{{ counter$ | async }}</div>
+#+END_SRC
+** Effect
+Para otra sesión
+** Effect                                                          :noexport:
+   #+attr_html: :height 100px :border none
+   [[./img/warning.png]]
+
+   Este código es un ejemplo de implementación de REDUX, no NGRX.
+
+#+REVEAL: split
+
+Ejemplo de counter.actions.ts
+#+BEGIN_SRC typescript
+// counter.actions.ts
+
+const RESET_ASYNC  = 'RESET_ASYNC';
+export const RESET = 'RESET';
+
+export function reset() {
+  return { type: RESET };
+}
+
+export function resetAsync(millisecondsToReset: number) { 
+  return {
+    type: RESET_ASYNC,
+    payload: function(dispatch) {
+      // async operation
+      setTimeout(() => {
+        dispatch({
+          type: RESET
+        });
+      }, millisecondsToReset);
+    }
+  };
+}
+#+END_SRC
+
+#+REVEAL: split
+
+Ejemplo de counter.reducer.ts
+#+BEGIN_SRC typescript
+// counter.reducer.ts
+
+import { RESET } from './counter.actions.ts'
+
+const initialState = 0;
+export function counterReducer(state, action) { 
+  switch (action.type) {
+    case RESET: return 0;
+    default: return state;
+  }
+}
+#+END_SRC
+
+
